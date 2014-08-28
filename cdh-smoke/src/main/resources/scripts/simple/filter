@@ -1,0 +1,4 @@
+sed -re 's#^.*last_modified.*$##g' \
+     -e 's#^.*CreateTime.*$##' \
+     -e 's#^.*[lL]ast.*Time.*$##' \
+     -e 's#^(Location|Owner).*$##' \

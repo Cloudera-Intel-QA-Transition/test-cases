@@ -1,0 +1,13 @@
+ADD JAR /usr/lib/hive/lib/hive-contrib.jar;
+
+DROP TABLE IF EXISTS apachelog;
+
+CREATE TABLE IF NOT EXISTS apachelog (remoteHost STRING, remoteLogname STRING, user STRING, time STRING, method STRING, uri STRING, proto STRING, status STRING, bytes STRING, referer STRING, userAgent STRING) ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.RegexSerDe' WITH SERDEPROPERTIES ("input.regex" = "^([^ ]*) +([^ ]*) +([^ ]*) +\\[([^]]*)\\] +\\\"([^ ]*) ([^ ]*) ([^ ]*)\\\" ([^ ]*) ([^ ]*) (?:\\\"-\\\")*\\\"(.*)\\\" (.*)$", "output.format.string" = "%1$s %2$s %3$s %4$s %5$s %6$s %7$s %8$s %9$s %10$s %11$s") STORED AS TEXTFILE;
+LOAD DATA LOCAL INPATH 'scripts/apachelog/apache.log' INTO TABLE apachelog;
+
+DROP TABLE IF EXISTS uri_hits;
+CREATE TABLE uri_hits(uri STRING, sep STRING, count INT);
+
+INSERT OVERWRITE TABLE uri_hits SELECT a.uri, "\t", COUNT(*) FROM apachelog a GROUP BY a.uri ORDER BY uri;
+
+SELECT * FROM uri_hits;

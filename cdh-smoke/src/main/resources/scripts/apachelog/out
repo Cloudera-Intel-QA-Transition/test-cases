@@ -1,0 +1,127 @@
+ADD JAR /usr/lib/hive/lib/hive-contrib.jar
+
+
+DROP TABLE IF EXISTS apachelog
+
+
+CREATE TABLE IF NOT EXISTS apachelog (remoteHost STRING, remoteLogname STRING, user STRING, time STRING, method STRING, uri STRING, proto STRING, status STRING, bytes STRING, referer STRING, userAgent STRING) ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.RegexSerDe' WITH SERDEPROPERTIES ("input.regex" = "^([^ ]*) +([^ ]*) +([^ ]*) +\\[([^]]*)\\] +\\\"([^ ]*) ([^ ]*) ([^ ]*)\\\" ([^ ]*) ([^ ]*) (?:\\\"-\\\")*\\\"(.*)\\\" (.*)$", "output.format.string" = "%1$s %2$s %3$s %4$s %5$s %6$s %7$s %8$s %9$s %10$s %11$s") STORED AS TEXTFILE
+
+LOAD DATA LOCAL INPATH 'scripts/apachelog/apache.log' INTO TABLE apachelog
+
+
+DROP TABLE IF EXISTS uri_hits
+
+CREATE TABLE uri_hits(uri STRING, sep STRING, count INT)
+
+
+INSERT OVERWRITE TABLE uri_hits SELECT a.uri, "\t", COUNT(*) FROM apachelog a GROUP BY a.uri ORDER BY uri
+
+
+SELECT * FROM uri_hits
+/			10
+/archives.html			3
+/archives/000005.html			2
+/archives/000021.html			1
+/archives/000024.html			1
+/archives/000026.html			1
+/archives/000032.html			1
+/archives/000047.html			2
+/archives/000055.html			1
+/archives/000064.html			2
+/archives/000075.html			2
+/archives/000076.html			1
+/archives/000089.html			1
+/archives/000090.html			1
+/archives/000104.html			1
+/archives/000104.html\r			1
+/archives/000121.html			1
+/archives/000132.html			1
+/archives/000140.html			1
+/archives/000142.html			1
+/archives/000145.html			1
+/archives/000149.html			1
+/archives/000163.html			1
+/archives/000173.html			1
+/archives/000180.html			1
+/archives/000182.html			1
+/archives/000183.html			2
+/archives/000184.html			1
+/archives/000201.html			1
+/archives/000203.html			3
+/archives/000204.html			4
+/archives/000205.html			1
+/archives/000211.html			1
+/archives/000212.html			1
+/archives/000228.html			1
+/archives/000254.html			1
+/archives/000258.html			1
+/archives/000259.html			3
+/archives/000276.html			1
+/archives/000297.html			1
+/archives/000304.html			1
+/archives/000311.html			1
+/archives/000319.html			1
+/archives/000326.html			1
+/archives/000328.html			2
+/archives/000347.html			2
+/archives/cat_carrierwave.html			1
+/archives/cat_jstress.html			1
+/atom.xml			8
+/feed.xml			5
+/index.rdf			6
+/index.xml			1
+/mt-comments.cgi			22
+/mt-comments.cgi?entry_id=10			1
+/mt-comments.cgi?entry_id=22			1
+/mt-comments.cgi?entry_id=42			1
+/mt-search.cgi?tag=agile&blog_id=1			1
+/mt-search.cgi?tag=architecture&blog_id=1			1
+/mt-search.cgi?tag=carrierwave&Template=feed&IncludeBlogs=1			1
+/mt-search.cgi?tag=development&Template=feed&IncludeBlogs=1			1
+/mt-search.cgi?tag=esb&Template=feed&IncludeBlogs=1			1
+/mt-search.cgi?tag=opinion&blog_id=1			1
+/mt-search.cgi?tag=parc&Template=feed&IncludeBlogs=1			1
+/mt-search.cgi?tag=xml&Template=feed&IncludeBlogs=1			1
+/mt-tb.cgi/10			1
+/mt-tb.cgi/100			2
+/mt-tb.cgi/104			1
+/mt-tb.cgi/105			3
+/mt-tb.cgi/119			2
+/mt-tb.cgi/12			1
+/mt-tb.cgi/131			1
+/mt-tb.cgi/132			2
+/mt-tb.cgi/145			1
+/mt-tb.cgi/149			2
+/mt-tb.cgi/150			1
+/mt-tb.cgi/152			1
+/mt-tb.cgi/164			1
+/mt-tb.cgi/168			1
+/mt-tb.cgi/17			1
+/mt-tb.cgi/170			1
+/mt-tb.cgi/173			1
+/mt-tb.cgi/184			1
+/mt-tb.cgi/202			2
+/mt-tb.cgi/203			2
+/mt-tb.cgi/207			1
+/mt-tb.cgi/235			1
+/mt-tb.cgi/247			2
+/mt-tb.cgi/271			5
+/mt-tb.cgi/274			2
+/mt-tb.cgi/295			4
+/mt-tb.cgi/318			2
+/mt-tb.cgi/326			1
+/mt-tb.cgi/33			1
+/mt-tb.cgi/330			2
+/mt-tb.cgi/35			1
+/mt-tb.cgi/41			1
+/mt-tb.cgi/49			1
+/mt-tb.cgi/5			2
+/mt-tb.cgi/50			1
+/mt-tb.cgi/62			4
+/mt-tb.cgi/78			3
+/mt-tb.cgi/80			1
+/mt-tb.cgi/85			1
+/mt-tb.cgi/92			1
+/mt-tb.cgi/93			1
+/mt-tb.cgi/95			1
+/robots.txt			7
