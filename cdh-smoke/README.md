@@ -7,7 +7,7 @@ To build:
 2. in the top-level folder of bigtop: mvn install
 3. in bigtop-test-framework: mvn install -DskipTests
 4. in bigtop-tests/test-artifacts: mvn install
-5. checkout latest [cdh-smoke](https://github.com/Cloudera-Intel-QA-Transition/test-cases/cdh-smoke)
+5. checkout latest [cdh-smoke](https://github.com/Cloudera-Intel-QA-Transition/test-cases/tree/master/cdh-smoke)
 6. in the top-level folder of cdh-smoke: mvn package
 7. copy target/cdh-smoke-0.8.0-SNAPSHOT-shaded.jar to a CDH gateway node
 
